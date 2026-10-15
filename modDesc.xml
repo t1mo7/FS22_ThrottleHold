@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="72">
+    <author>Timo</author>
+    <version>1.0.1.0</version>
+    <title>
+        <en>Throttle Hold</en>
+        <de>Gas halten</de>
+        <nl>Gas vasthouden</nl>
+    </title>
+    <description>
+        <en><![CDATA[Keep a vehicle applying throttle after you exit it - perfect for pulling a stuck tractor out with a second tractor while the stuck one keeps driving.
+
+Controls (while sitting in the vehicle, all rebindable):
+- Left Ctrl + T: arm / disarm throttle hold
+- Left Ctrl + Page Up / Page Down: change throttle percentage (5% - 100%)
+- Left Ctrl + G: switch direction (forward / reverse)
+
+Arm it, set the percentage, exit the vehicle, hop into your other tractor and pull. The throttle is only applied while nobody is driving the vehicle.]]></en>
+        <nl><![CDATA[Laat een voertuig gas blijven geven nadat je bent uitgestapt - ideaal om een vastgereden trekker met een tweede trekker los te trekken terwijl de vastzittende blijft rijden.
+
+Bediening (in het voertuig, alles aanpasbaar):
+- Linker Ctrl + T: gas vasthouden aan / uit
+- Linker Ctrl + Page Up / Page Down: gaspercentage aanpassen (5% - 100%)
+- Linker Ctrl + G: richting wisselen (vooruit / achteruit)]]></nl>
+        <de><![CDATA[Lässt ein Fahrzeug weiter Gas geben, nachdem du ausgestiegen bist - ideal, um einen festgefahrenen Traktor mit einem zweiten Traktor herauszuziehen.
+
+Steuerung (im Fahrzeug, alles anpassbar):
+- Linke Strg + T: Gas halten an / aus
+- Linke Strg + Bild auf / Bild ab: Gasprozent ändern (5% - 100%)
+- Linke Strg + G: Richtung wechseln (vorwärts / rückwärts)]]></de>
+    </description>
+    <iconFilename>icon_throttleHold.dds</iconFilename>
+    <multiplayer supported="true" />
+
+    <extraSourceFiles>
+        <sourceFile filename="scripts/ThrottleHoldEvent.lua" />
+        <sourceFile filename="scripts/register.lua" />
+    </extraSourceFiles>
+
+    <specializations>
+        <specialization name="throttleHold" className="ThrottleHold" filename="scripts/ThrottleHold.lua" />
+    </specializations>
+
+    <actions>
+        <action name="THROTTLEHOLD_TOGGLE" category="VEHICLE" />
+        <action name="THROTTLEHOLD_UP" category="VEHICLE" />
+        <action name="THROTTLEHOLD_DOWN" category="VEHICLE" />
+        <action name="THROTTLEHOLD_DIRECTION" category="VEHICLE" />
+    </actions>
+
+    <inputBinding>
+        <actionBinding action="THROTTLEHOLD_TOGGLE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_t" />
+        </actionBinding>
+        <actionBinding action="THROTTLEHOLD_UP">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_pageup" />
+        </actionBinding>
+        <actionBinding action="THROTTLEHOLD_DOWN">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_pagedown" />
+        </actionBinding>
+        <actionBinding action="THROTTLEHOLD_DIRECTION">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_g" />
+        </actionBinding>
+    </inputBinding>
+
+    <l10n>
+        <text name="input_THROTTLEHOLD_TOGGLE"><en>Throttle hold: arm / disarm</en><nl>Gas vasthouden: aan / uit</nl><de>Gas halten: an / aus</de></text>
+        <text name="input_THROTTLEHOLD_UP"><en>Throttle hold: increase %</en><nl>Gas vasthouden: % omhoog</nl><de>Gas halten: % erhöhen</de></text>
+        <text name="input_THROTTLEHOLD_DOWN"><en>Throttle hold: decrease %</en><nl>Gas vasthouden: % omlaag</nl><de>Gas halten: % verringern</de></text>
+        <text name="input_THROTTLEHOLD_DIRECTION"><en>Throttle hold: change direction</en><nl>Gas vasthouden: richting wisselen</nl><de>Gas halten: Richtung wechseln</de></text>
+
+        <text name="throttleHold_arm"><en>Arm throttle hold (%d%% %s)</en><nl>Gas vasthouden activeren (%d%% %s)</nl><de>Gas halten aktivieren (%d%% %s)</de></text>
+        <text name="throttleHold_disarm"><en>Disarm throttle hold (%d%% %s)</en><nl>Gas vasthouden uitschakelen (%d%% %s)</nl><de>Gas halten deaktivieren (%d%% %s)</de></text>
+        <text name="throttleHold_up"><en>Throttle hold +%d%%</en><nl>Gas vasthouden +%d%%</nl><de>Gas halten +%d%%</de></text>
+        <text name="throttleHold_down"><en>Throttle hold -%d%%</en><nl>Gas vasthouden -%d%%</nl><de>Gas halten -%d%%</de></text>
+        <text name="throttleHold_direction"><en>Throttle hold direction: %s</en><nl>Gas vasthouden richting: %s</nl><de>Gas halten Richtung: %s</de></text>
+        <text name="throttleHold_forward"><en>forward</en><nl>vooruit</nl><de>vorwärts</de></text>
+        <text name="throttleHold_reverse"><en>reverse</en><nl>achteruit</nl><de>rückwärts</de></text>
+        <text name="throttleHold_armedInfo"><en>THROTTLE HOLD ARMED: %d%% %s - applies when you exit the vehicle</en><nl>GAS VASTHOUDEN ACTIEF: %d%% %s - wordt toegepast als je uitstapt</nl><de>GAS HALTEN AKTIV: %d%% %s - wirkt, sobald du aussteigst</de></text>
+    </l10n>
+</modDesc>
