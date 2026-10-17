@@ -13,6 +13,31 @@ ThrottleHold.PERCENT_MAX = 100
 ThrottleHold.PERCENT_STEP = 5
 ThrottleHold.PERCENT_DEFAULT = 50
 
+-- The controls only work (and are only shown) while the left and right mouse buttons are both held down.
+ThrottleHold.MOUSE_BUTTON_LEFT = Input ~= nil and Input.MOUSE_BUTTON_LEFT or 1
+ThrottleHold.MOUSE_BUTTON_RIGHT = Input ~= nil and Input.MOUSE_BUTTON_RIGHT or 3
+ThrottleHold.mouseButtonsDown = {}
+
+local mouseListener = {}
+function mouseListener:mouseEvent(posX, posY, isDown, isUp, button)
+    if isDown then
+        ThrottleHold.mouseButtonsDown[button] = true
+    elseif isUp then
+        ThrottleHold.mouseButtonsDown[button] = nil
+    end
+end
+addModEventListener(mouseListener)
+
+function ThrottleHold.getBothMouseButtonsHeld()
+    if g_gui ~= nil and g_gui:getIsGuiVisible() then
+        -- a menu swallows the mouse-up events, start fresh when it closes
+        ThrottleHold.mouseButtonsDown = {}
+        return false
+    end
+    return ThrottleHold.mouseButtonsDown[ThrottleHold.MOUSE_BUTTON_LEFT] == true
+        and ThrottleHold.mouseButtonsDown[ThrottleHold.MOUSE_BUTTON_RIGHT] == true
+end
+
 function ThrottleHold.prerequisitesPresent(specializations)
     return SpecializationUtil.hasSpecialization(Drivable, specializations)
         and SpecializationUtil.hasSpecialization(Motorized, specializations)
@@ -160,6 +185,11 @@ end
 
 function ThrottleHold:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
     local spec = self[ThrottleHold.SPEC_TABLE_NAME]
+
+    if self.isClient and self.getIsEntered ~= nil and self:getIsEntered() then
+        ThrottleHold.updateActionEventsActive(self, ThrottleHold.getBothMouseButtonsHeld())
+    end
+
     if not spec.isActive then
         return
     end
@@ -198,16 +228,33 @@ function ThrottleHold:onRegisterActionEvents(isActiveForInput, isActiveForInputI
         local _, upId = self:addActionEvent(spec.actionEvents, InputAction.THROTTLEHOLD_UP, self, ThrottleHold.actionEventChangePercent, false, true, false, true, 1)
         g_inputBinding:setActionEventTextPriority(upId, GS_PRIO_NORMAL)
         g_inputBinding:setActionEventText(upId, string.format(g_i18n:getText("throttleHold_up"), ThrottleHold.PERCENT_STEP))
+        spec.upActionEventId = upId
 
         local _, downId = self:addActionEvent(spec.actionEvents, InputAction.THROTTLEHOLD_DOWN, self, ThrottleHold.actionEventChangePercent, false, true, false, true, -1)
         g_inputBinding:setActionEventTextPriority(downId, GS_PRIO_NORMAL)
         g_inputBinding:setActionEventText(downId, string.format(g_i18n:getText("throttleHold_down"), ThrottleHold.PERCENT_STEP))
+        spec.downActionEventId = downId
 
         local _, directionId = self:addActionEvent(spec.actionEvents, InputAction.THROTTLEHOLD_DIRECTION, self, ThrottleHold.actionEventDirection, false, true, false, true, nil)
         g_inputBinding:setActionEventTextPriority(directionId, GS_PRIO_NORMAL)
         spec.directionActionEventId = directionId
 
         ThrottleHold.updateActionEventTexts(self)
+        spec.actionEventsActive = nil
+        ThrottleHold.updateActionEventsActive(self, ThrottleHold.getBothMouseButtonsHeld())
+    end
+end
+
+function ThrottleHold:updateActionEventsActive(active)
+    local spec = self[ThrottleHold.SPEC_TABLE_NAME]
+    if spec.actionEventsActive == active then
+        return
+    end
+    spec.actionEventsActive = active
+
+    for _, actionEventId in ipairs({ spec.toggleActionEventId, spec.upActionEventId, spec.downActionEventId, spec.directionActionEventId }) do
+        g_inputBinding:setActionEventActive(actionEventId, active)
+        g_inputBinding:setActionEventTextVisibility(actionEventId, active)
     end
 end
 
@@ -226,16 +273,25 @@ function ThrottleHold:updateActionEventTexts()
 end
 
 function ThrottleHold.actionEventToggle(self, actionName, inputValue, callbackState, isAnalog)
+    if not ThrottleHold.getBothMouseButtonsHeld() then
+        return
+    end
     local spec = self[ThrottleHold.SPEC_TABLE_NAME]
     self:setThrottleHoldState(not spec.isActive, spec.percent, spec.isReverse)
 end
 
 function ThrottleHold.actionEventChangePercent(self, actionName, inputValue, callbackState, isAnalog)
+    if not ThrottleHold.getBothMouseButtonsHeld() then
+        return
+    end
     local spec = self[ThrottleHold.SPEC_TABLE_NAME]
     self:setThrottleHoldState(spec.isActive, spec.percent + callbackState * ThrottleHold.PERCENT_STEP, spec.isReverse)
 end
 
 function ThrottleHold.actionEventDirection(self, actionName, inputValue, callbackState, isAnalog)
+    if not ThrottleHold.getBothMouseButtonsHeld() then
+        return
+    end
     local spec = self[ThrottleHold.SPEC_TABLE_NAME]
     self:setThrottleHoldState(spec.isActive, spec.percent, not spec.isReverse)
 end

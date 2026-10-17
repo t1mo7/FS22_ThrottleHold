@@ -10,6 +10,7 @@ A Farming Simulator 22 mod that **keeps a vehicle on the throttle after you get 
 - The throttle only works while nobody is driving the vehicle. When you get back in, you drive normally
 - A "Throttle hold armed" text shows on screen while it's on and you're in the vehicle
 - The percentage and direction are saved per vehicle. The on/off state is not saved, so nothing drives off by itself when you load a savegame
+- The controls only work while you hold the left and right mouse buttons, so you never turn it on by accident
 - Works in multiplayer (the server applies the throttle)
 
 ## Installation
@@ -20,7 +21,9 @@ A Farming Simulator 22 mod that **keeps a vehicle on the throttle after you get 
 
 ## Usage
 
-| Input (in a vehicle) | Action |
+Hold the **left and right mouse buttons** down, then press the key. The controls only show up and only work while both mouse buttons are held, so you can't trigger them by accident.
+
+| Input (in a vehicle, holding left + right mouse button) | Action |
 |---|---|
 | Left CTRL + T | Turn throttle hold on / off |
 | Left CTRL + Page Up | Throttle +5% |
@@ -48,7 +51,7 @@ If something doesn't work, open `Documents\My Games\FarmingSimulator2022\log.txt
 
 ## Files
 
-- `modDesc.xml`: mod description, key bindings and translations
+- `modDesc.xml`: mod description, key bindings and texts
 - `scripts/register.lua`: adds the mod to every drivable vehicle
 - `scripts/ThrottleHold.lua`: throttle logic, keys and on-screen text
 - `scripts/ThrottleHoldEvent.lua`: multiplayer event
